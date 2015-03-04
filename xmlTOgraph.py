@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*-coding: utf-8-*-
 
+import conf as co
 import numpy as np
 import matplotlib.pyplot as plt
 import xml.etree.ElementTree as ET
@@ -78,7 +79,6 @@ for graph_dict in elem.getiterator("graph"):
 
     valuesToPut[_TITLE] = whichGraph
 
-
     es = graph_dict.findall('.//params[@key="Xaxis"]')
     for e in es:
         X_labels = np.arange(len( e.text.split(",") ))
@@ -130,77 +130,94 @@ for graph_dict in elem.getiterator("graph"):
             C_data_value = valuesToPut[whichValue]
 
     bar_width = 0.6
-    plt.subplots_adjust(left=0.04, bottom=0.3, right=0.95, wspace=0.5, hspace=0.3)
+    width = 0.35
     plt.rcParams['font.size'] = 9
 
-    plt.suptitle('Reflection statstics on each resolution shells. (I/sigma > 0.0, excl. dets = 4.14)', size=15)
+    fig = plt.figure(figsize=(30,6), dpi=100, facecolor=co.fig_color)
+    whichGraph= fig.add_subplot(371)
+    fig.subplots_adjust(top=0.84,left=10, bottom=0.3, right=20., wspace=0.5, hspace=0.3)
+    fig.suptitle('Reflection statstics on each resolution shells. (I/sigma > 0.0, excl. dets = 4.14)', size=10)
+
+    whichGraph.set_xlabel(graph_dict.items()[0][1])
+    whichGraph.set_ylabel('Number of reflection')
+    whichGraph.bar(X_labels,
+            X_data_value,
+            bar_width,
+            color=co.ref_bar,
+            label="all",
+            align="center")
+    whichGraph.plot(plot_data_value,
+            color=co.indep_plot,
+            marker=co.p_marker,
+            label="uniq.",
+            markersize=co.marker_s)
+    whichGraph.set_xticks(X_labels)
+    whichGraph.set_xticklabels(X_labels_value,rotation=40,size=5, ha="right")
+    whichGraph.margins(0,0)
+    whichGraph.legend(loc="upper left", bbox_to_anchor=(1,1.15), ncol=1,prop={'size':6})
+    #
+    #
+    #
+    #
+    #plt.grid()
 
 
-    plt.subplot(371)
-    plt.xlabel(graph_dict.items()[0][1])
-    plt.ylabel('Number of reflection')
-    plt.bar(X_labels, X_data_value, bar_width, color='lime',label="all")
-    plt.plot(plot_data_value, color='k', marker='o',label="uniq.",markersize=4)
-    plt.xticks(X_labels,X_labels_value,rotation=65,size=9)
-    plt.margins(0.01,0)
-    lgnd = plt.legend(loc="best", bbox_to_anchor=(0.58,1.41), ncol=1)
-    plt.grid()
+    #plt.subplot(111)
+    #plt.xlabel(r"Resolution shell")
+    #plt.ylabel('Rint')
+    #plt.bar(X_labels, P_data_value, bar_width, color='purple',label="Rint")
+    #plt.xticks(X_labels,X_labels_value,rotation=90,size=10)
+    #plt.margins(0.01,0)
+    #lgnd = plt.legend(loc="best", bbox_to_anchor=(0.55,1.26,0,0), ncol=2)
+    #plt.grid()
 
+    #plt.subplot(373)
+    #plt.xlabel(r"Resolution shell")
+    #plt.ylabel('Rpim')
+    #plt.bar(X_labels, I_data_value, bar_width, color='yellow', label="Rpim")
+    #plt.xticks(X_labels,X_labels_value,rotation=65,size=10)
+    #plt.margins(0.01,0)
+    #lgnd = plt.legend(loc="best", bbox_to_anchor=(0.6,1.26,0,0), ncol=2)
+    #plt.grid()
 
-    plt.subplot(372)
-    plt.xlabel(r"Resolution shell")
-    plt.ylabel('Rint')
-    plt.bar(X_labels, P_data_value, bar_width, color='purple',label="Rint")
-    plt.xticks(X_labels,X_labels_value,rotation=90,size=10)
-    plt.margins(0.01,0)
-    lgnd = plt.legend(loc="best", bbox_to_anchor=(0.55,1.26,0,0), ncol=2)
-    plt.grid()
+    #plt.subplot(374)
+    #plt.xlabel(r"Resolution shell")
+    #plt.ylabel('Rsig')
+    #plt.bar(X_labels, S_data_value, bar_width, color='orange', label="Rsig")
+    #plt.xticks(X_labels,X_labels_value,rotation=65,size=10)
+    #plt.margins(0.01,0)
+    #lgnd = plt.legend(loc="best", bbox_to_anchor=(0.58,1.26,0,0), ncol=2)
+    #plt.grid()
 
-    plt.subplot(373)
-    plt.xlabel(r"Resolution shell")
-    plt.ylabel('Rpim')
-    plt.bar(X_labels, I_data_value, bar_width, color='yellow', label="Rpim")
-    plt.xticks(X_labels,X_labels_value,rotation=65,size=10)
-    plt.margins(0.01,0)
-    lgnd = plt.legend(loc="best", bbox_to_anchor=(0.6,1.26,0,0), ncol=2)
-    plt.grid()
+    #plt.subplot(375)
+    #plt.xlabel(r"Resolution shell")
+    #plt.ylabel('I /sigma')
+    #plt.bar(X_labels, Y_data_value, bar_width, color='blue',label="I/sigma")
+    #plt.xticks(X_labels,X_labels_value,rotation=65,size=10)
+    #plt.margins(0.01,0)
+    #lgnd = plt.legend(loc="best", bbox_to_anchor=(0.7,1.26,0,0), ncol=2)
+    #plt.grid()
 
-    plt.subplot(374)
-    plt.xlabel(r"Resolution shell")
-    plt.ylabel('Rsig')
-    plt.bar(X_labels, S_data_value, bar_width, color='orange', label="Rsig")
-    plt.xticks(X_labels,X_labels_value,rotation=65,size=10)
-    plt.margins(0.01,0)
-    lgnd = plt.legend(loc="best", bbox_to_anchor=(0.58,1.26,0,0), ncol=2)
-    plt.grid()
+    #plt.subplot(376)
+    #plt.xlabel(r"Resolution shell")
+    #plt.ylabel('Redundancy')
+    #plt.bar(X_labels, Z_data_value, bar_width, color='green',label="Redundancy")
+    #plt.xticks(X_labels,X_labels_value,rotation=65,size=10)
+    #plt.margins(0.01,0)
+    #lgnd = plt.legend(loc="best", bbox_to_anchor=(0.93,1.26,0,0), ncol=2)
+    #plt.grid()
 
-    plt.subplot(375)
-    plt.xlabel(r"Resolution shell")
-    plt.ylabel('I /sigma')
-    plt.bar(X_labels, Y_data_value, bar_width, color='blue',label="I/sigma")
-    plt.xticks(X_labels,X_labels_value,rotation=65,size=10)
-    plt.margins(0.01,0)
-    lgnd = plt.legend(loc="best", bbox_to_anchor=(0.7,1.26,0,0), ncol=2)
-    plt.grid()
+    #plt.subplot(377)
+    #plt.xlabel(r"Resolution shell")
+    #plt.ylabel('Completeness')
+    #plt.bar(X_labels, C_data_value, bar_width, color='pink', label="Completeness")
+    #plt.xticks(X_labels,X_labels_value,rotation=65,size=10)
+    #plt.margins(0.01,0)
+    #lgnd = plt.legend(loc="best", bbox_to_anchor=(1.05,1.26,0,0), ncol=2)
+    #plt.grid()
 
-    plt.subplot(376)
-    plt.xlabel(r"Resolution shell")
-    plt.ylabel('Redundancy')
-    plt.bar(X_labels, Z_data_value, bar_width, color='green',label="Redundancy")
-    plt.xticks(X_labels,X_labels_value,rotation=65,size=10)
-    plt.margins(0.01,0)
-    lgnd = plt.legend(loc="best", bbox_to_anchor=(0.93,1.26,0,0), ncol=2)
-    plt.grid()
-
-    plt.subplot(377)
-    plt.xlabel(r"Resolution shell")
-    plt.ylabel('Completeness')
-    plt.bar(X_labels, C_data_value, bar_width, color='pink', label="Completeness")
-    plt.xticks(X_labels,X_labels_value,rotation=65,size=10)
-    plt.margins(0.01,0)
-    lgnd = plt.legend(loc="best", bbox_to_anchor=(1.05,1.26,0,0), ncol=2)
-    plt.grid()
-
+    plt.tight_layout()
+    plt.savefig("test.png",dpi=320)
     plt.show()
 
 
